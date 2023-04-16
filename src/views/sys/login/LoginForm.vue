@@ -8,6 +8,7 @@
     v-show="getShow"
     @keypress.enter="handleLogin"
   >
+    <!-- 账号输入框 -->
     <FormItem name="account" class="enter-x">
       <Input
         size="large"
@@ -16,6 +17,8 @@
         class="fix-auto-fill"
       />
     </FormItem>
+
+    <!-- 密码输入框 -->
     <FormItem name="password" class="enter-x">
       <InputPassword
         size="large"
@@ -96,9 +99,13 @@
   const loading = ref(false)
   const rememberMe = ref(false)
 
+  // const formData = reactive({
+  //   account: 'vben',
+  //   password: '123456',
+  // })
   const formData = reactive({
-    account: 'vben',
-    password: '123456',
+    account: '',
+    password: '',
   })
 
   const { validForm } = useFormValid(formRef)
