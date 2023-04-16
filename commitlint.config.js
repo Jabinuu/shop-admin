@@ -19,6 +19,7 @@ const scopeComplete = execSync('git status --porcelain || true')
 
 /** @type {import('cz-git').UserConfig} */
 module.exports = {
+  // https://commitlint.js.org/#/reference-configuration
   ignores: [(commit) => commit.includes('init')],
   extends: ['@commitlint/config-conventional'],
   rules: {
