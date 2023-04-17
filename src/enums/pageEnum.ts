@@ -8,3 +8,4 @@ export enum PageEnum {
   // error log page path
   ERROR_LOG_PAGE = '/error-log/list',
 }
+// 枚举类型不可修改

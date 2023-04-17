@@ -40,6 +40,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           find: 'vue-i18n',
           replacement: 'vue-i18n/dist/vue-i18n.cjs.js',
         },
+        // 配置路径别名
         // /@/xxxx => src/xxxx
         {
           find: /\/@\//,
