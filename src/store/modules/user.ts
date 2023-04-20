@@ -94,7 +94,7 @@ export const useUserStore = defineStore({
 
         const { token } = data
 
-        // save token
+        // save toke
         this.setToken(token)
         return this.afterLoginAction(goHome)
       } catch (error) {

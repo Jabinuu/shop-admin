@@ -18,7 +18,7 @@ export function loginApi(params: LoginParams, mode: ErrorMessageMode = 'modal') 
   return defHttp.post<LoginResultModel>(
     {
       url: Api.Login,
-      params,
+      params, // params和data皆可为post的数据可用
     },
     {
       errorMessageMode: mode,

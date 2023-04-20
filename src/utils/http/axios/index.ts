@@ -52,7 +52,10 @@ const transform: AxiosTransform = {
     const { code, data: result, message } = data
 
     // 这里逻辑可以根据项目进行修改
-    const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS
+    const hasSuccess =
+      data &&
+      Reflect.has(data, 'code') &&
+      (code === ResultEnum.SUCCESS || code === ResultEnum.SUCCESSLOGIN)
     if (hasSuccess) {
       return result
     }
@@ -86,10 +89,15 @@ const transform: AxiosTransform = {
 
   // 请求之前处理config
   beforeRequestHook: (config, options) => {
-    const { apiUrl, joinPrefix, joinParamsToUrl, formatDate, joinTime = true, urlPrefix } = options
+    const { apiUrl, joinPrefix, joinParamsToUrl, formatDate, joinTime = true } = options
+    const urlPrefix = JSON.parse(options.urlPrefix as string)
 
     if (joinPrefix) {
-      config.url = `${urlPrefix}${config.url}`
+      if ((config.url as string).includes('acl')) {
+        config.url = `${urlPrefix[0]}${config.url}`
+      } else {
+        config.url = `${urlPrefix[1]}${config.url}`
+      }
     }
 
     if (apiUrl && isString(apiUrl)) {
