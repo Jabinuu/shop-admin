@@ -17,6 +17,8 @@ import { useI18n } from '/@/hooks/web/useI18n'
 import { joinTimestamp, formatRequestDate } from './helper'
 import { useUserStoreWithOut } from '/@/store/modules/user'
 import { AxiosRetry } from '/@/utils/http/axios/axiosRetry'
+import nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 const globSetting = useGlobSetting()
 const urlPrefix = globSetting.urlPrefix
@@ -149,7 +151,8 @@ const transform: AxiosTransform = {
    * @description: 请求拦截器处理
    */
   requestInterceptors: (config, options) => {
-    // 请求之前处理config
+    nprogress.configure({ showSpinner: false })
+    nprogress.start()
     const token = getToken()
     if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
       // jwt token
@@ -164,6 +167,7 @@ const transform: AxiosTransform = {
    * @description: 响应拦截器处理
    */
   responseInterceptors: (res: AxiosResponse<any>) => {
+    nprogress.done()
     return res
   },
 

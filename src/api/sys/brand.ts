@@ -5,7 +5,7 @@ enum Api {
   BrandList = '/admin/product/baseTrademark',
 }
 
-export function reqBrandList(params: BasicPageParams) {
+export function reqBrandInfo(params: BasicPageParams) {
   return defHttp.get(
     {
       url: `${Api.BrandList}/${params.page}/${params.pageSize}`,

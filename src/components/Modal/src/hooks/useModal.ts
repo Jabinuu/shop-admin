@@ -29,6 +29,7 @@ const visibleData = reactive<{ [key: number]: boolean }>({})
 /**
  * @description: Applicable to independent modal and call outside
  */
+// useModal 用于操作组件
 export function useModal(): UseModalReturnType {
   const modal = ref<Nullable<ModalMethods>>(null)
   const loaded = ref<Nullable<boolean>>(false)

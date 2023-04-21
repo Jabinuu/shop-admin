@@ -38,3 +38,18 @@ export interface BeforeMiniState {
   menuMode?: MenuModeEnum
   menuType?: MenuTypeEnum
 }
+
+export interface BrandList {
+  id: number
+  logoUrl: string
+  tmName: string
+}
+
+export interface BrandInfo {
+  current: number
+  pages: number
+  records: BrandList[]
+  searchCount: boolean
+  size: number
+  total: number
+}
