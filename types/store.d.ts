@@ -40,7 +40,7 @@ export interface BeforeMiniState {
 }
 
 export interface BrandList {
-  id: number
+  id?: number
   logoUrl: string
   tmName: string
 }

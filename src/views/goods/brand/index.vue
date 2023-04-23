@@ -6,19 +6,21 @@
       >
       <a-table
         class="brandTable"
-        :rowClassName="(row, index) => (index == 0 ? 'headerBold' : null)"
         :columns="columns"
         :data-source="tableData"
         :pagination="false"
         bordered
       >
-        <template #bodyCell="{ column }">
+        <!-- bodyCell的{ column, text, record } 分别是列对象，单元格文本，单元格对应的数据源的数据项（响应式的）-->
+        <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'logoUrl'">
-            <img src="../../../assets/images/header.jpg" style="width: 50px; height: 50px" />
+            <img :src="record.logoUrl" style="width: 50px; height: 50px" />
           </template>
           <template v-if="column.key === 'operation'">
-            <a-button id="editBtn"><Icon icon="system-uicons:write"></Icon>修改</a-button>
-            <a-button danger id="deleteBtn"
+            <a-button id="editBtn" @click="onEdit(record)"
+              ><Icon icon="system-uicons:write"></Icon>修改</a-button
+            >
+            <a-button danger id="deleteBtn" @click="onClickRemove(record)"
               ><Icon icon="material-symbols:delete-outline"></Icon>删除</a-button
             >
           </template>
@@ -41,20 +43,23 @@
         </template>
       </a-pagination>
     </div>
-    <BrandModal @register="register"></BrandModal>
+    <BrandModal @register="register" @added="onAdded" @edited="onEdited"></BrandModal>
   </div>
 </template>
 
 <script lang="ts">
   import '/@/design/customBase.less'
-  import { ref, reactive, onMounted, toRefs, toRef } from 'vue'
+  import { ref, reactive, onMounted, toRefs, toRef, computed, watch, createVNode } from 'vue'
   import { Icon } from '/@/components/Icon'
   import BrandModal from '/@/components/Modal/src/BrandModal.vue'
   import { useBrandStore } from '/@/store/modules/brand'
   import { useModal } from '/@/components/Modal'
+  import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
+  import { message, Modal } from 'ant-design-vue'
   export default {
     name: 'BrandIndex',
     components: { Icon, BrandModal },
+
     setup() {
       const columns = [
         {
@@ -82,17 +87,25 @@
       ]
       const [register, { openModal, setModalProps }] = useModal() // 数组也可以用[]解构
       const brandStore = useBrandStore()
-      const tableData = ref([])
-      let pagination = reactive({
+      const pagination = reactive({
         current: 1,
-        total: 5,
         pageSize: 5,
         pageSizeOptions: ['5', '10', '15', '20'],
       })
-
+      const tableData = computed(() => brandStore.brandList)
+      const total = computed(() => brandStore.brandTotal)
+      const pages = computed(() => brandStore.maxPageNum)
+      let isFirst = true
+      watch(pages, async () => {
+        // 监听页数发生变化，跳转到最新页码
+        if (!isFirst) {
+          pagination.current = pages.value
+          await getBrandInfo()
+        }
+      })
       onMounted(() => {
         // 发送请求
-        getBrandInfo()
+        getBrandInfo().finally(() => (isFirst = false))
       })
 
       async function getBrandInfo() {
@@ -100,34 +113,71 @@
           page: pagination.current,
           pageSize: pagination.pageSize,
         })
-        tableData.value = brandStore.brandList
-        pagination.total = brandStore.brandTotal
+      }
+
+      // 已经添加完成后的回调
+      async function onAdded() {
+        pagination.current = pages.value
+        await getBrandInfo()
+      }
+
+      // 已经修改完成后的回调
+      async function onEdited() {
+        await getBrandInfo()
       }
 
       // 每页展示条数变化，再次发请求
       async function onShowSizeChange(_, pageSize: Number) {
         pagination.pageSize = pageSize
-        getBrandInfo()
+        await getBrandInfo()
       }
 
-      // 再次发请求
+      // 当前页码发生变化，再次发请求
       async function onPageChange(page: number, pageSize: number) {
-        getBrandInfo()
+        await getBrandInfo()
       }
 
       function onClickAddBrand() {
         openModal(true)
       }
 
+      function onClickRemove(record) {
+        Modal.confirm({
+          title: '警告',
+          icon: createVNode(ExclamationCircleOutlined),
+          content: '你确定要删除品牌吗？',
+          async onOk() {
+            await brandStore.removeBrand({ id: record.id })
+            message.success('删除品牌成功！')
+            await getBrandInfo()
+          },
+          onCancel() {},
+        })
+      }
+
+      async function onEdit(record) {
+        const data = {
+          id: record.id,
+          tmName: record.tmName,
+          url: record.logoUrl,
+        }
+        openModal(true, data)
+      }
+
       return {
         tableData,
         columns,
         ...toRefs(pagination),
+        total,
         register,
         openModal,
+        onAdded,
+        onEdited,
+        onEdit,
         onShowSizeChange,
         onPageChange,
         onClickAddBrand,
+        onClickRemove,
       }
     },
   }

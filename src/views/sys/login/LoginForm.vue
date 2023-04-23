@@ -138,3 +138,9 @@
     }
   }
 </script>
+
+<style lang="less">
+  .enter-x {
+    justify-content: space-around;
+  }
+</style>
