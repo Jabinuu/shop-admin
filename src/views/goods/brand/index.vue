@@ -62,28 +62,10 @@
 
     setup() {
       const columns = [
-        {
-          title: '序号',
-          dataIndex: 'id',
-          key: 'id',
-          width: 70,
-        },
-        {
-          title: '品牌名称',
-          dataIndex: 'tmName',
-          key: 'tmName',
-          width: 300,
-        },
-        {
-          title: '品牌LOGO',
-          dataIndex: 'logoUrl',
-          key: 'logoUrl',
-        },
-        {
-          title: '操作',
-          dataIndex: 'operation',
-          key: 'operation',
-        },
+        { title: '序号', dataIndex: 'id', key: 'id', width: 70 },
+        { title: '品牌名称', dataIndex: 'tmName', key: 'tmName', width: 300 },
+        { title: '品牌LOGO', dataIndex: 'logoUrl', key: 'logoUrl' },
+        { title: '操作', dataIndex: 'operation', key: 'operation' },
       ]
       const [register, { openModal, setModalProps }] = useModal() // 数组也可以用[]解构
       const brandStore = useBrandStore()
@@ -184,18 +166,15 @@
 </script>
 
 <style lang="less" scoped>
-  .addBrand {
-    margin: 10px 0;
-  }
   .brandTable {
-    margin: 10px 10px 30px 0;
+    margin: 20px 0;
     // 因为scoped这里的样式只能修改本组件，修改不了子组件，要用深度选择器，实现样式穿透
     :deep(.ant-table-thead) > tr > th {
       font-weight: bold;
     }
     :deep(#editBtn) {
       margin-right: 10px;
-      background-color: #40a9ff;
+      background-color: #ffa500;
       color: white;
       border-radius: 4px;
     }

@@ -1,12 +1,34 @@
 <template>
   <div class="customBase">
-    <h1>我是平台管理页面</h1>
+    <div></div>
+    <!-- 卡片1 三级分类搜索-->
+    <Categories></Categories>
+    <!-- 卡片2 展示商品属性,用到了动态组件和keepalive缓存机制提高性能-->
+    <a-card class="cardAttr">
+      <keep-alive>
+        <component
+          :is="isAddAttr ? AddAttribute : GoodsAttribute"
+          @add="isAddAttr = true"
+          @back="isAddAttr = false"
+        ></component>
+      </keep-alive>
+    </a-card>
   </div>
 </template>
 
-<script setup>
-  import { ref } from 'vue'
+<script setup lang="ts">
+  import { onMounted, reactive, ref } from 'vue'
   import '/@/design/customBase.less'
+  import GoodsAttribute from './components/GoodsAttribute.vue'
+  import AddAttribute from './components/AddAttribute.vue'
+  // 注意：由于组件实例比较庞大，不建议将其作响应式，也没必要作响应式，这样性能开销较大，
+  // 所以应用markRaw或ShllowRef或ShallowReactive将其排除响应式，不对它进行代理。
+  const isAddAttr = ref<boolean>(false)
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .cardAttr {
+    margin: 30px 10px 10px;
+    box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+  }
+</style>

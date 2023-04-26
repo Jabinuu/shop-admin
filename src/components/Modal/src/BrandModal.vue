@@ -167,7 +167,7 @@
       }
 
       const clearModal = (): void => {
-        imageBase64.value = ''
+        imageUrl.value = ''
         formState.brandName = ''
       }
       return {

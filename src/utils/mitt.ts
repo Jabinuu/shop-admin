@@ -31,6 +31,7 @@ export interface Emitter {
   clear(): void
 }
 
+// 核心实现原理是 Map 映射数据类型
 /**
  * Mitt: Tiny (~200b) functional event emitter / pubsub.
  * @name mitt
