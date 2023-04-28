@@ -4,7 +4,7 @@
     <!-- 卡片1 三级分类搜索-->
     <CategoriesSelect :isDisabled="isAddAttr" @selected="change"></CategoriesSelect>
     <!-- 卡片2 展示商品属性,用到了动态组件和keepalive缓存机制提高性能-->
-    <a-card class="cardAttr">
+    <a-card class="cardBottom">
       <keep-alive>
         <component
           :is="isAddAttr ? AddAttribute : GoodsAttribute"
@@ -33,8 +33,8 @@
 </script>
 
 <style lang="less" scoped>
-  .cardAttr {
-    margin: 10px;
+  .cardBottom {
+    margin: 20px 10px;
     box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
     :deep(.ant-table-thead) > tr > th {
       font-weight: bold;

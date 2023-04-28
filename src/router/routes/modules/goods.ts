@@ -27,13 +27,13 @@ const goodsRoutes: AppRouteModule = {
     {
       path: 'spu',
       name: 'spu',
-      component: () => import('/@/views/goods/sku/index.vue'),
+      component: () => import('/@/views/goods/spu/index.vue'),
       meta: { title: t('routes.goods.spu'), orderNo: 30 },
     },
     {
       path: 'sku',
       name: 'sku',
-      component: () => import('/@/views/goods/spu/index.vue'),
+      component: () => import('/@/views/goods/sku/index.vue'),
       meta: { title: t('routes.goods.sku'), orderNo: 40 },
     },
   ],

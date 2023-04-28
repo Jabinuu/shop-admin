@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-button type="primary" class="addBrand" @click="onClickAddAttr" :disabled="!props.isSelected"
+    <a-button type="primary" @click="onClickAddAttr" :disabled="!props.isSelected"
       ><Icon icon="ant-design:plus-outlined"></Icon>添加属性</a-button
     >
     <a-table :data-source="attrInfoList" :columns="columns" bordered class="table">
@@ -40,8 +40,8 @@
   const categoryStore = useCategoryStore()
   const categoryIds = computed(() => categoryStore.categoryIds)
   const columns = [
-    { title: '序号', dataIndex: 'id', key: 'id', width: 80 },
-    { title: '属性名称', dataIndex: 'attrName', key: 'attrName', width: 100 },
+    { title: '序号', dataIndex: 'id', key: 'id', width: 100 },
+    { title: '属性名称', dataIndex: 'attrName', key: 'attrName', width: 120 },
     { title: '属性值列表', dataIndex: 'attrValueList', key: 'attrValueList', width: 800 },
     { title: '操作', dataIndex: 'operation', key: 'operation' },
   ]
