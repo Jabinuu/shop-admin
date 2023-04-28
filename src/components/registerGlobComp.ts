@@ -1,6 +1,6 @@
 import type { App } from 'vue'
 import { Button } from './Button'
-import Categories from '/@/components/CategoriesSelect/index.vue'
+import CategoriesSelect from '/@/components/CategoriesSelect/index.vue'
 
 import { Input, Layout, Table, Pagination, Upload, Form, Card, Select, Tag } from 'ant-design-vue'
 export function registerGlobComp(app: App) {
@@ -15,5 +15,5 @@ export function registerGlobComp(app: App) {
     .use(Card)
     .use(Select)
     .use(Tag)
-  app.component('Categories', Categories)
+  app.component('CategoriesSelect', CategoriesSelect)
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-button type="primary" class="addBrand" @click="onClickAddAttr"
+    <a-button type="primary" class="addBrand" @click="onClickAddAttr" :disabled="!props.isSelected"
       ><Icon icon="ant-design:plus-outlined"></Icon>添加属性</a-button
     >
     <a-table :data-source="attrInfoList" :columns="columns" bordered class="table">
@@ -19,7 +19,7 @@
           <a-button id="editBtn" @click="onEdit(record)"
             ><Icon icon="system-uicons:write"></Icon>修改</a-button
           >
-          <a-button danger id="deleteBtn" @click="onClickRemove(record)"
+          <a-button danger id="deleteBtn" @click="onClickRemove(record.id)"
             ><Icon icon="material-symbols:delete-outline"></Icon>删除</a-button
           >
         </template>
@@ -29,14 +29,16 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, onUnmounted, reactive, ref } from 'vue'
+  import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue'
   import mitt from '/@/utils/useMitt'
   import { Icon } from '/@/components/Icon'
   import useCategoryStore from '/@/store/modules/category'
-  import { reqAttrInfoList } from '/@/api/sys/category'
+  import { reqAttrInfoList, reqRemoveAttr } from '/@/api/sys/category'
   import { message } from 'ant-design-vue'
+  import { confirmDialog } from '/@/hooks/component/useConfirmDialog'
   const attrInfoList = ref([])
   const categoryStore = useCategoryStore()
+  const categoryIds = computed(() => categoryStore.categoryIds)
   const columns = [
     { title: '序号', dataIndex: 'id', key: 'id', width: 80 },
     { title: '属性名称', dataIndex: 'attrName', key: 'attrName', width: 100 },
@@ -45,6 +47,8 @@
   ]
   // defineEmits无须引入，可直接使用，返回一个可触发已定义事件的函数
   const emit = defineEmits(['add', 'update'])
+  const props = defineProps(['isSelected'])
+
   onMounted(() => {
     // 注册事件
     mitt.on('selected', getAttrInfoList)
@@ -65,11 +69,20 @@
   }
 
   async function onEdit(record) {
+    const params = {
+      attrName: record.attrName,
+      attrValueList: record.attrValueList,
+    }
     emit('update')
+    nextTick(() => mitt.emit('passEditData', params))
   }
 
-  async function onClickRemove(record) {
-    message.success('删除成功！')
+  async function onClickRemove(attrId) {
+    confirmDialog(async () => {
+      await reqRemoveAttr(attrId)
+      message.success('删除属性成功！')
+      await getAttrInfoList(categoryIds.value)
+    }, '确定要删除该属性吗？')
   }
 </script>
 

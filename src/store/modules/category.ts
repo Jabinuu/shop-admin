@@ -28,6 +28,7 @@ interface CategoryInfo {
   category1: Category1[]
   category2: Category2[]
   category3: Category3[]
+  categoryIds: { id1: number; id2: number; id3: number } | {}
 }
 
 export default defineStore('app-category', {
@@ -36,6 +37,7 @@ export default defineStore('app-category', {
       category1: [],
       category2: [],
       category3: [],
+      categoryIds: {},
     }
   },
   actions: {

@@ -10,6 +10,7 @@
           :size="'middle'"
           style="width: 230px"
           @change="handleChange1"
+          :disabled="props.isDisabled"
         >
         </a-select>
       </a-form-item>
@@ -23,6 +24,7 @@
           :options="category2"
           :size="'middle'"
           @change="handleChange2"
+          :disabled="props.isDisabled"
         >
         </a-select>
       </a-form-item>
@@ -36,6 +38,7 @@
           :options="category3"
           :size="'middle'"
           @change="handleChange3"
+          :disabled="props.isDisabled"
         >
         </a-select>
       </a-form-item>
@@ -47,6 +50,8 @@
   import { computed, onMounted, ref, reactive } from 'vue'
   import useCategoryStore from '/@/store/modules/category'
   import mitt from '/@/utils/useMitt'
+  const emit = defineEmits(['selected'])
+  const props = defineProps(['isDisabled'])
   const categoryStore = useCategoryStore()
   const keys = reactive({})
   const values = reactive({}) //三个分类的表单双向绑定值的数组
@@ -67,6 +72,7 @@
     if (oldValue1 && option.value != values.value1.value) {
       values.value2 = undefined
       values.value3 = undefined
+      emit('selected', false)
     }
     oldValue1 = option.value
     keys.id1 = option.id
@@ -77,6 +83,7 @@
   const handleChange2 = async (_, option) => {
     if (oldValue2 && option.value != values.value2.value) {
       values.value3 = undefined
+      emit('selected', false)
     }
     oldValue2 = option.value
     keys.id2 = option.id
@@ -85,7 +92,10 @@
 
   const handleChange3 = (_, option) => {
     keys.id3 = option.id
-    mitt.emit('selected', keys)
+    // 虽然keys和categoryIds的结构完全一样，但是切记千万不可直接将keys复制给categoryIds，这样会导致他们引用同一个对象！
+    categoryStore.categoryIds = { id1: keys.id1, id2: keys.id2, id3: keys.id3 }
+    mitt.emit('selected', keys) //全局事件总线的事件
+    emit('selected', true) //自定义事件
   }
 </script>
 

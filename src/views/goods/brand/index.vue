@@ -49,13 +49,13 @@
 
 <script lang="ts">
   import '/@/design/customBase.less'
-  import { ref, reactive, onMounted, toRefs, toRef, computed, watch, createVNode } from 'vue'
+  import { ref, reactive, onMounted, toRefs, toRef, computed, watch } from 'vue'
   import { Icon } from '/@/components/Icon'
   import BrandModal from '/@/components/Modal/src/BrandModal.vue'
   import { useBrandStore } from '/@/store/modules/brand'
   import { useModal } from '/@/components/Modal'
-  import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
-  import { message, Modal } from 'ant-design-vue'
+  import { confirmDialog } from '/@/hooks/component/useConfirmDialog'
+  import { message } from 'ant-design-vue'
   export default {
     name: 'BrandIndex',
     components: { Icon, BrandModal },
@@ -124,17 +124,12 @@
       }
 
       function onClickRemove(record) {
-        Modal.confirm({
-          title: '警告',
-          icon: createVNode(ExclamationCircleOutlined),
-          content: '你确定要删除品牌吗？',
-          async onOk() {
-            await brandStore.removeBrand({ id: record.id })
-            message.success('删除品牌成功！')
-            await getBrandInfo()
-          },
-          onCancel() {},
-        })
+        // 应用了闭包
+        confirmDialog(async () => {
+          await brandStore.removeBrand({ id: record.id })
+          message.success('删除品牌成功！')
+          await getBrandInfo()
+        }, '确定要删除该品牌吗？')
       }
 
       async function onEdit(record) {

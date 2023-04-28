@@ -4,6 +4,16 @@ enum Api {
   Category1 = '/admin/product/getCategory1/',
   Category2 = '/admin/product/getCategory2/',
   Category3 = '/admin/product/getCategory3/',
+  AttrInfoList = '/admin/product/attrInfoList/',
+  saveAttr = '/admin/product/saveAttrInfo',
+  removeAttr = '/admin/product/deleteAttr/',
+}
+
+interface baseAttrInfo {
+  attrName: string
+  attrValueList: { attrid: number; valueName: string }
+  categoryId: number
+  categoryLevel: number
 }
 
 export const reqCategory1 = () => {
@@ -42,7 +52,30 @@ export const reqCategory3 = (category2Id: number) => {
 export const reqAttrInfoList = (params: { id1: number; id2: number; id3: number }) => {
   return defHttp.get(
     {
-      url: `/admin/product/attrInfoList/${params.id1}/${params.id2}/${params.id3}`,
+      url: `${Api.AttrInfoList}${params.id1}/${params.id2}/${params.id3}`,
+    },
+    {
+      errorMessageMode: 'message',
+    },
+  )
+}
+
+export const reqSaveAttr = (params: baseAttrInfo) => {
+  return defHttp.post(
+    {
+      url: `${Api.saveAttr}`,
+      params,
+    },
+    {
+      errorMessageMode: 'message',
+    },
+  )
+}
+
+export const reqRemoveAttr = (attrId: number) => {
+  return defHttp.delete(
+    {
+      url: `${Api.removeAttr}${attrId}`,
     },
     {
       errorMessageMode: 'message',
