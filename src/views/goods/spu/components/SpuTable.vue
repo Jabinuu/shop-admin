@@ -1,10 +1,10 @@
 <template>
   <div class="customBase">
-    <a-button type="primary" @click="onClickAddSpu"
+    <a-button type="primary" @click="onClickAddSpu" :disabled="!showAddBtn"
       ><Icon icon="ant-design:plus-outlined"></Icon>添加SPU</a-button
     >
-    <a-table class="table" :columns="columns" :data-source="spuList" bordered>
-      <template #bodyCell="{ record, column }">
+    <a-table class="table" :columns="columns" :data-source="spuList" bordered :pagination="false">
+      <template #bodyCell="{ column }">
         <template v-if="column.key === 'operation'">
           <a-button class="marginR" type="success" @click="onClickAddSku" title="添加Sku"
             ><Icon icon="ant-design:plus-outlined"></Icon></a-button
@@ -23,11 +23,26 @@
         </template>
       </template>
     </a-table>
+
+    <a-pagination
+      class="center"
+      v-model:current="curPage"
+      v-model:page-size="pageSize"
+      :page-size-options="pageSizeOptions"
+      :total="total"
+      show-size-changer
+      @change="onChangePage"
+    >
+      <template #buildOptionText="props">
+        <span v-if="props.value !== '20'">{{ props.value }}条/页</span>
+        <span v-else>全部</span>
+      </template>
+    </a-pagination>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, onUnmounted, ref } from 'vue'
+  import { computed, nextTick, onMounted, onUnmounted, ref, toRef, watch } from 'vue'
   import useSpuStore from '/@/store/modules/spu'
   import '/@/design/customBase.less'
   import { Icon } from '/@/components/Icon'
@@ -41,10 +56,21 @@
     { title: 'Spu描述', dataIndex: 'description', key: 'description', width: 400 },
     { title: '操作', dataIndex: 'operation', key: 'operation' },
   ]
+  const pageSizeOptions = ref<string[]>(['5', '10', '15', '20'])
   const addBtnState = ref<boolean>(false)
+  const props = defineProps(['showAddBtn'])
   const spuList = computed(() => spuStore.spuList)
-  const page = 1
-  const limit = 10
+  const curPage = ref<number>(1)
+  const pageSize = ref<number>(5)
+  const total = computed(() => spuStore.spuInfo.total)
+  let category3Id = undefined
+
+  watch(toRef(props, 'showAddBtn'), (val) => {
+    if (!val) {
+      spuStore.clearSpuStore()
+    }
+  })
+
   onMounted(() => {
     mitt.on('selected', getSpuList)
   })
@@ -56,19 +82,30 @@
 
   // 获取用于展示的spu数据列表
   function getSpuList(e) {
-    addBtnState.value = spuStore.getSpuList({ page, limit, category3Id: e.id3 })
+    category3Id = e.id3
+    addBtnState.value = spuStore.getSpuList({
+      page: curPage.value,
+      limit: pageSize.value,
+      category3Id,
+    })
+  }
+
+  const onChangePage = (current: number, pageSize: number) => {
+    getSpuList({ id3: category3Id })
   }
 
   function onClickAddSpu() {
     emit('change', 'SpuAdd')
+    nextTick(() => mitt.emit('passId3', category3Id))
   }
 
-  function onClickAddSku() {
+  function onClickAddSku(category3Id) {
     emit('change', 'SkuAdd')
   }
 
   function onClickUpdateSpu() {
     emit('change', 'SpuAdd')
+    nextTick(() => mitt.emit('passId3', category3Id))
   }
 
   function onClickSkuList() {}
@@ -83,5 +120,9 @@
     :deep(.marginR) {
       margin-right: 16px;
     }
+  }
+  .center {
+    margin-top: 20px;
+    text-align: center;
   }
 </style>

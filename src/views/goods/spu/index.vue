@@ -1,9 +1,9 @@
 <template>
   <div class="customBase">
-    <CategoriesSelect :isDisabled="isDisabled"></CategoriesSelect>
+    <CategoriesSelect :isDisabled="isDisabled" @showAddBtn="changeAddBtn"></CategoriesSelect>
     <a-card class="cardBottom">
       <keep-alive>
-        <component :is="curComponent" @change="changeComp"></component>
+        <component :is="curComponent" @change="changeComp" :showAddBtn="showAddBtn"></component>
       </keep-alive>
     </a-card>
   </div>
@@ -18,6 +18,11 @@
   const componentList = { SpuTable, SpuAdd, SkuAdd }
   const curComponent = ref(markRaw(SpuTable))
   const isDisabled = ref<boolean>(false)
+  const showAddBtn = ref<boolean>(false)
+
+  function changeAddBtn(e) {
+    showAddBtn.value = e
+  }
 
   function changeComp(comp) {
     isDisabled.value = comp == 'SpuTable' ? false : true

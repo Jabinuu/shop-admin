@@ -7,7 +7,6 @@
           placeholder="请输入"
           v-model:value="values.value1"
           :options="category1"
-          :size="'middle'"
           style="width: 230px"
           @change="handleChange1"
           :disabled="props.isDisabled"
@@ -22,7 +21,6 @@
           v-model:value="values.value2"
           style="width: 230px"
           :options="category2"
-          :size="'middle'"
           @change="handleChange2"
           :disabled="props.isDisabled"
         >
@@ -36,7 +34,6 @@
           v-model:value="values.value3"
           style="width: 230px"
           :options="category3"
-          :size="'middle'"
           @change="handleChange3"
           :disabled="props.isDisabled"
         >
