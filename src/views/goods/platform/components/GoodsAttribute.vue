@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-button type="primary" @click="onClickAddAttr" :disabled="!props.isSelected"
+    <a-button type="primary" @click="onClickAddAttr" :disabled="!props.showAddBtn"
       ><Icon icon="ant-design:plus-outlined"></Icon>添加属性</a-button
     >
     <a-table :data-source="attrInfoList" :columns="columns" bordered class="table">
@@ -29,26 +29,31 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue'
+  import { computed, nextTick, onMounted, onUnmounted, reactive, ref, toRef, watch } from 'vue'
   import mitt from '/@/utils/useMitt'
   import { Icon } from '/@/components/Icon'
   import useCategoryStore from '/@/store/modules/category'
   import { reqAttrInfoList, reqRemoveAttr } from '/@/api/sys/category'
   import { message } from 'ant-design-vue'
   import { confirmDialog } from '/@/hooks/component/useConfirmDialog'
+
   const attrInfoList = ref([])
   const categoryStore = useCategoryStore()
   const categoryIds = computed(() => categoryStore.categoryIds)
   const columns = [
     { title: '序号', dataIndex: 'id', key: 'id', width: 100 },
     { title: '属性名称', dataIndex: 'attrName', key: 'attrName', width: 120 },
-    { title: '属性值列表', dataIndex: 'attrValueList', key: 'attrValueList', width: 800 },
+    { title: '属性值列表', dataIndex: 'attrValueList', key: 'attrValueList', width: 700 },
     { title: '操作', dataIndex: 'operation', key: 'operation' },
   ]
   // defineEmits无须引入，可直接使用，返回一个可触发已定义事件的函数
-  const emit = defineEmits(['add', 'update'])
-  const props = defineProps(['isSelected'])
-
+  const emit = defineEmits(['change'])
+  const props = defineProps(['showAddBtn'])
+  watch(toRef(props, 'showAddBtn'), (value) => {
+    if (!value) {
+      attrInfoList.value = []
+    }
+  })
   onMounted(() => {
     // 注册事件
     mitt.on('selected', getAttrInfoList)
@@ -65,7 +70,7 @@
   }
 
   async function onClickAddAttr() {
-    emit('add')
+    emit('change', true)
   }
 
   async function onEdit(record) {
@@ -73,7 +78,7 @@
       attrName: record.attrName,
       attrValueList: record.attrValueList,
     }
-    emit('update')
+    emit('change', true)
     nextTick(() => mitt.emit('passEditData', params))
   }
 

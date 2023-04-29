@@ -46,7 +46,7 @@
   import { reqSaveAttr } from '/@/api/sys/category'
   import { Icon } from '/@/components/Icon'
   import mitt from '/@/utils/useMitt'
-  const emit = defineEmits(['back'])
+  const emit = defineEmits(['change'])
   const categoryStore = useCategoryStore()
 
   const attrName = ref(undefined)
@@ -93,7 +93,7 @@
 
     reqSaveAttr(params).then(() => {
       message.success('添加属性成功！')
-      emit('back')
+      emit('change', false)
       mitt.emit('selected', categoryIds.value)
       clearForm()
     })
@@ -101,7 +101,7 @@
 
   // 返回属性展示组件
   function onClickCancel() {
-    emit('back')
+    emit('change', false)
     clearForm()
   }
 
