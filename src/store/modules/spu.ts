@@ -61,7 +61,7 @@ export default defineStore('app-spu', {
     },
     tmList(state) {
       return state.brandList.map((item: any) => ({
-        id: item.id,
+        key: item.id,
         label: item.tmName,
         value: item.tmName,
       }))

@@ -148,8 +148,6 @@
   onMounted(() => {
     mitt.on('addNewSpu', getCategory3Id)
     mitt.on('updateSpu', getSpuById)
-    // spuStore.getBrandList()
-    // spuStore.getSaleAttrList()
   })
 
   onUnmounted(() => {
@@ -218,8 +216,9 @@
         spuId: undefined,
       })
     })
-    // 发送请求保存spu
+    // 发送请求保存spu,并且更新展示表格
     await spuStore.saveNewSpu(spu)
+    mitt.emit('updataTable')
     clearForm()
     message.success('添加Spu成功！')
     emit('change', 'SpuTable')

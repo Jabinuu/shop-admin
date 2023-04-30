@@ -76,12 +76,14 @@
 
   onMounted(() => {
     mitt.on('selected', getSpuList)
+    mitt.on('updataTable', updateTable)
     spuStore.getBrandList()
     spuStore.getSaleAttrList()
   })
 
   onUnmounted(() => {
     spuStore.clearSpuStore()
+    mitt.off('updataTable', updateTable)
     mitt.off('selected', getSpuList)
   })
 
@@ -111,6 +113,10 @@
   function onClickUpdateSpu(e) {
     emit('change', 'SpuAdd')
     nextTick(() => mitt.emit('updateSpu', e.id))
+  }
+
+  function updateTable() {
+    getSpuList({ id3: category3Id })
   }
 
   function onClickSkuList() {}
