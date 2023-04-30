@@ -4,11 +4,15 @@
       ><Icon icon="ant-design:plus-outlined"></Icon>添加SPU</a-button
     >
     <a-table class="table" :columns="columns" :data-source="spuList" bordered :pagination="false">
-      <template #bodyCell="{ column }">
+      <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'operation'">
           <a-button class="marginR" type="success" @click="onClickAddSku" title="添加Sku"
             ><Icon icon="ant-design:plus-outlined"></Icon></a-button
-          ><a-button class="marginR" type="warning" @click="onClickUpdateSpu" title="修改Spu"
+          ><a-button
+            class="marginR"
+            type="warning"
+            @click="onClickUpdateSpu(record)"
+            title="修改Spu"
             ><Icon icon="system-uicons:write"></Icon></a-button
           ><a-button
             class="marginR"
@@ -57,7 +61,6 @@
     { title: '操作', dataIndex: 'operation', key: 'operation' },
   ]
   const pageSizeOptions = ref<string[]>(['5', '10', '15', '20'])
-  const addBtnState = ref<boolean>(false)
   const props = defineProps(['showAddBtn'])
   const spuList = computed(() => spuStore.spuList)
   const curPage = ref<number>(1)
@@ -73,6 +76,8 @@
 
   onMounted(() => {
     mitt.on('selected', getSpuList)
+    spuStore.getBrandList()
+    spuStore.getSaleAttrList()
   })
 
   onUnmounted(() => {
@@ -81,9 +86,9 @@
   })
 
   // 获取用于展示的spu数据列表
-  function getSpuList(e) {
+  async function getSpuList(e) {
     category3Id = e.id3
-    addBtnState.value = spuStore.getSpuList({
+    await spuStore.getSpuList({
       page: curPage.value,
       limit: pageSize.value,
       category3Id,
@@ -96,16 +101,16 @@
 
   function onClickAddSpu() {
     emit('change', 'SpuAdd')
-    nextTick(() => mitt.emit('passId3', category3Id))
+    nextTick(() => mitt.emit('addNewSpu', category3Id))
   }
 
   function onClickAddSku(category3Id) {
     emit('change', 'SkuAdd')
   }
 
-  function onClickUpdateSpu() {
+  function onClickUpdateSpu(e) {
     emit('change', 'SpuAdd')
-    nextTick(() => mitt.emit('passId3', category3Id))
+    nextTick(() => mitt.emit('updateSpu', e.id))
   }
 
   function onClickSkuList() {}
