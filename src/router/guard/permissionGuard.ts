@@ -82,10 +82,12 @@ export function createPermissionGuard(router: Router) {
 
     // get userinfo while last fetch time is empty
     if (userStore.getLastUpdateTime === 0) {
+      // token过期进这个分支
+
       try {
         await userStore.getUserInfoAction()
       } catch (err) {
-        next()
+        next('/login')
         return
       }
     }
@@ -106,6 +108,9 @@ export function createPermissionGuard(router: Router) {
     permissionStore.setDynamicAddedRoute(true)
 
     if (to.name === PAGE_NOT_FOUND_ROUTE.name) {
+      // token有效期内进这个分支
+      console.log(2)
+
       // 动态添加路由后，此处应当重定向到fullPath，否则会加载404页面内容
       next({ path: to.fullPath, replace: true, query: to.query })
     } else {
