@@ -6,7 +6,12 @@ import {
   reqSaveSpuInfo,
   reqSpuById,
   reqBrandById,
+  reqRemoveSpu,
+  reqSpuImageList,
+  reqSaveSku,
 } from '/@/api/sys/spu'
+
+import { message } from 'ant-design-vue'
 
 export default defineStore('app-spu', {
   state: (): any => {
@@ -14,7 +19,7 @@ export default defineStore('app-spu', {
       spuInfo: {},
       brandList: [],
       saleAttrList: [],
-      // spuById: {},
+      spuImageList: [],
     }
   },
   actions: {
@@ -38,13 +43,30 @@ export default defineStore('app-spu', {
       await reqSaveSpuInfo(Object.assign(spu, { spuSaleAttrList }))
     },
 
+    async getSpuImageList(spuId: number) {
+      this.spuImageList = await reqSpuImageList(spuId)
+    },
+
     async getSpuById(spuId: any) {
       return await reqSpuById(spuId)
     },
 
     async getBrandById(tmId: any) {
+      // 这里的接口是由bug的，当品牌被删除后，这个品牌下的spu却仍然存在，这会导致tm=null
       const tm = await reqBrandById(tmId)
-      return tm.tmName
+      if (Object.prototype.toString.call(tm) === '[object Null]') {
+        message.warning('这个Spu的品牌已经不存在了，请重新选定品牌')
+      } else {
+        return tm.tmName
+      }
+    },
+
+    async removeSpu(spuId: number) {
+      await reqRemoveSpu(spuId)
+    },
+
+    async saveSku(params: any) {
+      await reqSaveSku(params)
     },
 
     clearSpuStore() {

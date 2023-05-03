@@ -33,7 +33,7 @@
   import mitt from '/@/utils/useMitt'
   import { Icon } from '/@/components/Icon'
   import useCategoryStore from '/@/store/modules/category'
-  import { reqAttrInfoList, reqRemoveAttr } from '/@/api/sys/category'
+  import { reqRemoveAttr } from '/@/api/sys/category'
   import { message } from 'ant-design-vue'
   import { confirmDialog } from '/@/hooks/component/useConfirmDialog'
 
@@ -65,8 +65,12 @@
   })
 
   // 获取分类商品信息列表
-  async function getAttrInfoList(e) {
-    attrInfoList.value = await reqAttrInfoList(e)
+  async function getAttrInfoList() {
+    attrInfoList.value = await categoryStore.getAttrInfoList({
+      id1: categoryIds.value.id1,
+      id2: categoryIds.value.id2,
+      id3: categoryIds.value.id3,
+    })
   }
 
   async function onClickAddAttr() {

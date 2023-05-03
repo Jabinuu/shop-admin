@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { reqCategory1, reqCategory2, reqCategory3 } from '/@/api/sys/category'
-
+import { reqAttrInfoList } from '/@/api/sys/category'
 interface op {
   value: string
   label: string
@@ -24,11 +24,17 @@ interface Category3 {
   name: string
 }
 
+interface CategoryIds {
+  id1: number
+  id2: number
+  id3: number
+}
+
 interface CategoryInfo {
   category1: Category1[]
   category2: Category2[]
   category3: Category3[]
-  categoryIds: { id1: number; id2: number; id3: number } | {}
+  categoryIds: CategoryIds | {}
 }
 
 export default defineStore('app-category', {
@@ -52,6 +58,9 @@ export default defineStore('app-category', {
     async getCategory3(Category2Id: number) {
       const data = await reqCategory3(Category2Id)
       this.category3 = data
+    },
+    async getAttrInfoList(params: CategoryIds) {
+      return await reqAttrInfoList(params)
     },
   },
   getters: {
@@ -88,5 +97,8 @@ export default defineStore('app-category', {
       })
       return options
     },
+    category1Id: (state) => (state.categoryIds as CategoryIds).id1,
+    category2Id: (state) => (state.categoryIds as CategoryIds).id2,
+    category3Id: (state) => (state.categoryIds as CategoryIds).id3,
   },
 })

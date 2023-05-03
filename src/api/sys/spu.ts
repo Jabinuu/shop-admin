@@ -8,6 +8,9 @@ enum Api {
   SaveSpuInfo = '/admin/product/saveSpuInfo',
   BrandList = '/admin/product/baseTrademark/getTrademarkList',
   BrandById = '/admin/product/baseTrademark/get/',
+  RemoveSpu = '/admin/product/deleteSpu/',
+  SpuImageList = '/admin/product/spuImageList/',
+  SaveSku = '/admin/product/saveSkuInfo',
 }
 
 export const reqSpuList = (params: any) => {
@@ -83,6 +86,40 @@ export const reqBrandById = (params: any) => {
   return defHttp.get(
     {
       url: `${Api.BrandById}${params}`,
+    },
+    {
+      errorMessageMode: 'message',
+    },
+  )
+}
+
+export const reqRemoveSpu = (params: any) => {
+  return defHttp.delete(
+    {
+      url: `${Api.RemoveSpu}${params}`,
+    },
+    {
+      errorMessageMode: 'message',
+    },
+  )
+}
+
+export const reqSpuImageList = (params: any) => {
+  return defHttp.get(
+    {
+      url: `${Api.SpuImageList}${params}`,
+    },
+    {
+      errorMessageMode: 'message',
+    },
+  )
+}
+
+export const reqSaveSku = (params: any) => {
+  return defHttp.post(
+    {
+      url: `${Api.SaveSku}`,
+      params,
     },
     {
       errorMessageMode: 'message',

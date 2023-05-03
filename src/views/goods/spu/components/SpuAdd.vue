@@ -107,12 +107,14 @@
   } from 'vue'
   import { Icon } from '/@/components/Icon'
   import useSpuStore from '/@/store/modules/spu'
+
   import mitt from '/@/utils/useMitt'
   import { PlusOutlined } from '@ant-design/icons-vue'
   import { message, UploadProps } from 'ant-design-vue'
 
   const emit = defineEmits(['change'])
   const spuStore = useSpuStore()
+
   const spu = reactive({
     id: undefined,
     category3Id: 0,
@@ -157,8 +159,7 @@
 
   const getCategory3Id = (e) => (spu.category3Id = e)
 
-  const getSpuById = async (spuId) => {
-    const temp = await spuStore.getSpuById(spuId)
+  const getSpuById = (temp) => {
     spu.id = temp.id
     spu.category3Id = temp.category3Id
     spu.description = temp.description
@@ -166,7 +167,7 @@
     spu.tmId = temp.tmId
     spu.spuImageList = temp.spuImageList
     spu.spuSaleAttrList = temp.spuSaleAttrList
-    tmSelector.value = await spuStore.getBrandById(temp.tmId)
+    tmSelector.value = temp.tmSelector
     spuStore.saleAttrList = spuStore.saleAttrList.filter(
       (item) => temp.spuSaleAttrList.findIndex((elem) => elem.saleAttrName == item.name) == -1,
     )
